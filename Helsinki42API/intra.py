@@ -32,6 +32,10 @@ class IntraAPIClient(object):
             self.scopes = config['intra']['scopes']
             self.progress_bar = progress_bar
             self.token = None
+        if self.client_id == "":
+            self.client_id = os.environ.get("COALITION_UID")
+        if self.client_secret == "":
+            self.client_secret = os.environ.get("COALITION_SECRET")
 
     def request_token(self):
         request_token_payload = {
