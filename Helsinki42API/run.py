@@ -1,13 +1,13 @@
 from intra import ic
 
 
-campus_id = 13
+campus_id = 14
 cursus_id = 1
 
 # Filter by campus in specified range of updated_at
 payload = {
     "filter[campus_id]":campus_id,
-    "range[updated_at]":"2019-01-01T00:00:00.000Z,2020-01-01T00:00:00.000Z"
+    # "range[updated_at]":"2019-01-01T00:00:00.000Z,2020-01-01T00:00:00.000Z"
 }
 
 # GET campus_users of specified campus in range
