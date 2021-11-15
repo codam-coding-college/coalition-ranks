@@ -19,17 +19,27 @@ pyxis_coalition_id = 58
 temp_student_id = 64068
 temp_student_login = "limartin"
 
+# Title IDs:
+# 321 = Il Maestro %login
+# 82 = [DEPRECATED] %login
+
+# example = Captain %login (1st)
+# example = Commodore %login (2nd)
+# etc
+# example = Landlubber %login (F Tier)
 
 def main():
     print("Program started")
+    temp_id = translate_login_to_id("tmullan")
     # fetch_filtered_students()
     # fetch_campus_students(campus_id)
     # who_is_id(temp_student_id)
     # who_is_login(temp_student_login)
-    temp_id = translate_login_to_id("limartin")
     # fetch_coalition_info_by_id(temp_student_id)
+    # fetch_student_info(temp_student_id)
     # get_all_users_in_coalition(vela_coalition_id)
-    fetch_student_info(temp_id)
+    fetch_students_titles(temp_id)
+    what_is_title(82)
 
 
 # Fetch list of all students
@@ -52,8 +62,8 @@ def fetch_campus_students(campus):
         "range[login]": "4,zzz",
         "sort": "login"
     }
-    specific_user = ic.pages_threaded("campus/" + str(campus) + "/users", params=payload)
-    for entry in specific_user:
+    all_students = ic.pages_threaded("campus/" + str(campus) + "/users", params=payload)
+    for entry in all_students:
         print(f"{entry['login']} == {entry['id']}")
 
 
@@ -101,7 +111,7 @@ def fetch_coalition_info_by_id(student_id):
     print("Fetching coalition info for specified id:")
     payload = {
     }
-    user_coalition_response = ic.get("users/" + str(student_id) + "/coalitions_users", payload)
+    user_coalition_response = ic.get("users/" + str(student_id) + "/coalitions_users", params=payload)
     data = user_coalition_response.json()
     for entry in data:
         print(entry)
@@ -111,10 +121,13 @@ def fetch_coalition_info_by_id(student_id):
 def get_all_users_in_coalition(coalition_id):
     print("Fetching all students from specified coalition:")
     payload = {
+        "sort": "user_id"
     }
-    user_coalition_response = ic.pages_threaded("coalitions/" + str(coalition_id) + "/coalitions_users", payload)
+    user_coalition_response = ic.pages_threaded("coalitions/" + str(coalition_id) + "/coalitions_users", params=payload)
     data = user_coalition_response
     count = 0
+    # for entry in data:
+    #     entry['rank'] = 0
     for entry in data:
         print(entry)
         count = count + 1
@@ -131,6 +144,26 @@ def fetch_student_info(student_id):
     for entry in specific_user:
         print(entry)
 
+
+def fetch_students_titles(student_id):
+    print("Fetching all titles the specified student has access to:")
+    payload = {
+    }
+    specific_user = ic.pages_threaded("users/" + str(student_id) + "/titles_users", params=payload)
+    for entry in specific_user:
+        print(entry)
+
+
+def what_is_title(title_id):
+    print("Printing selected title's info:")
+    payload = {
+    }
+    title_details = ic.pages_threaded("titles/" + str(title_id), params=payload)
+    print(title_details)
+
+
+def who_has_title(title_id):
+    # TODO
 
 if __name__ == "__main__":
     main()
