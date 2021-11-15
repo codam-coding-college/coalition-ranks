@@ -26,9 +26,10 @@ def main():
     # fetch_campus_students(campus_id)
     # who_is_id(temp_student_id)
     # who_is_login(temp_student_login)
+    temp_id = translate_login_to_id("limartin")
     # fetch_coalition_info_by_id(temp_student_id)
     # get_all_users_in_coalition(vela_coalition_id)
-    # fetch_student_info(temp_student_id)
+    fetch_student_info(temp_id)
 
 
 # Fetch list of all students
@@ -78,6 +79,21 @@ def who_is_login(login):
     specific_user = ic.pages_threaded("campus/" + str(campus_id) + "/users", params=payload)
     for entry in specific_user:
         print(f"{entry['login']} is {entry['id']}")
+
+
+def translate_login_to_id(login) -> int:
+    print("Returning id for the login specified.")
+    payload = {
+        "filter[login]": login,
+        "range[login]": "4,zzz",
+        "sort": "login"
+    }
+    specific_user = ic.pages_threaded("campus/" + str(campus_id) + "/users", params=payload)
+    if specific_user:
+        return specific_user[0]['id']
+    else:
+        print("Error translating id from login")
+        return 0
 
 
 # GET /v2/users/:user_id/coalitions_users
