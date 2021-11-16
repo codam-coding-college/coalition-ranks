@@ -27,7 +27,7 @@ temp_student_login = "limartin"
 # example = Captain %login (1st)
 # example = Commodore %login (2nd)
 # etc
-# example = Landlubber %login (F Tier)
+# example = Landlubber %login (F)
 
 def main():
     print("Program started")
@@ -53,6 +53,9 @@ def give_coalition_titles(coalition_id):
     student_rank_info = calculate_coalition_ranks(snapshot_bundle)
     # Sort the list by rank because why not
     student_rank_info = sort_by_rank(student_rank_info)
+    # Fetch title_id based on abstract rank and title_config.yml
+    student_rank_info = append_title_ids(student_rank_info, coalition_id)
+    #TODO make append_title_ids
 
     # (Optional) add readable intra login to student_rank_info
     if 1 == 1:
