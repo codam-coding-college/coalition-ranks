@@ -1,4 +1,6 @@
 # # Max requests is 20 per minute
+import os
+import yaml
 
 from intra import ic
 
@@ -31,7 +33,7 @@ temp_student_login = "limartin"
 
 def main():
     print("Program started")
-    temp_id = translate_login_to_id("tmullan")
+    # temp_id = translate_login_to_id("tmullan")
     # fetch_filtered_students()
     # fetch_campus_students(campus_id)
     # who_is_id(temp_student_id)
@@ -55,7 +57,6 @@ def give_coalition_titles(coalition_id):
     student_rank_info = sort_by_rank(student_rank_info)
     # Fetch title_id based on abstract rank and title_config.yml
     student_rank_info = append_title_ids(student_rank_info, coalition_id)
-    #TODO make append_title_ids
 
     # (Optional) add readable intra login to student_rank_info
     if 1 == 1:
@@ -114,6 +115,75 @@ def get_abstract_title(current_rank, lowest_rank):
     if current_rank <= individual_ranks + (tier_size * 4):
         return "D"
     return "E"
+
+
+def append_title_ids(student_rank_info, coalition_id):
+    title_id_array = [0 for _ in range(36)]
+    coalition_spec = 'vela'
+    if coalition_id == cetus_coalition_id:
+        coalition_spec = 'cetus'
+    if coalition_id == pyxis_coalition_id:
+        coalition_spec = 'pyxis'
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+    with open(base_dir + '/title_config.yml', 'r') as cfg_stream:
+        config = yaml.load(cfg_stream, Loader=yaml.BaseLoader)
+        title_id_array[0] = config['all_titles'][coalition_spec]['v1']
+        title_id_array[1] = config['all_titles'][coalition_spec]['v2']
+        title_id_array[2] = config['all_titles'][coalition_spec]['v3']
+        title_id_array[3] = config['all_titles'][coalition_spec]['v4']
+        title_id_array[4] = config['all_titles'][coalition_spec]['v5']
+        title_id_array[5] = config['all_titles'][coalition_spec]['v6']
+        title_id_array[6] = config['all_titles'][coalition_spec]['v7']
+        title_id_array[7] = config['all_titles'][coalition_spec]['v8']
+        title_id_array[8] = config['all_titles'][coalition_spec]['v9']
+        title_id_array[9] = config['all_titles'][coalition_spec]['v10']
+        title_id_array[10] = config['all_titles'][coalition_spec]['v11']
+        title_id_array[11] = config['all_titles'][coalition_spec]['v12']
+        title_id_array[12] = config['all_titles'][coalition_spec]['v13']
+        title_id_array[13] = config['all_titles'][coalition_spec]['v14']
+        title_id_array[14] = config['all_titles'][coalition_spec]['v15']
+        title_id_array[15] = config['all_titles'][coalition_spec]['v16']
+        title_id_array[16] = config['all_titles'][coalition_spec]['v17']
+        title_id_array[17] = config['all_titles'][coalition_spec]['v18']
+        title_id_array[18] = config['all_titles'][coalition_spec]['v19']
+        title_id_array[19] = config['all_titles'][coalition_spec]['v20']
+        title_id_array[20] = config['all_titles'][coalition_spec]['v21']
+        title_id_array[21] = config['all_titles'][coalition_spec]['v22']
+        title_id_array[22] = config['all_titles'][coalition_spec]['v23']
+        title_id_array[23] = config['all_titles'][coalition_spec]['v24']
+        title_id_array[24] = config['all_titles'][coalition_spec]['v25']
+        title_id_array[25] = config['all_titles'][coalition_spec]['v26']
+        title_id_array[26] = config['all_titles'][coalition_spec]['v27']
+        title_id_array[27] = config['all_titles'][coalition_spec]['v28']
+        title_id_array[28] = config['all_titles'][coalition_spec]['v29']
+        title_id_array[29] = config['all_titles'][coalition_spec]['v30']
+        title_id_array[30] = config['all_titles'][coalition_spec]['vA']
+        title_id_array[31] = config['all_titles'][coalition_spec]['vB']
+        title_id_array[32] = config['all_titles'][coalition_spec]['vC']
+        title_id_array[33] = config['all_titles'][coalition_spec]['vD']
+        title_id_array[34] = config['all_titles'][coalition_spec]['vE']
+        title_id_array[35] = config['all_titles'][coalition_spec]['vF']
+    for entry in student_rank_info:
+        entry[3] = make_abstract_title_concrete(entry[2], title_id_array)
+    return student_rank_info
+
+
+def make_abstract_title_concrete(abstract_title, title_array):
+    if abstract_title == "A":
+        return title_array[30]
+    if abstract_title == "B":
+        return title_array[31]
+    if abstract_title == "C":
+        return title_array[32]
+    if abstract_title == "D":
+        return title_array[33]
+    if abstract_title == "E":
+        return title_array[34]
+    if abstract_title == "F":
+        return title_array[35]
+    abstract_title = int(abstract_title)
+    if abstract_title <= 30:
+        return title_array[abstract_title - 1]
 
 
 # Fetch list of all students
