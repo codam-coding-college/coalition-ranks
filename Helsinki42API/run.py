@@ -11,6 +11,8 @@ vela_coalition_id = 60
 cetus_coalition_id = 59
 pyxis_coalition_id = 58
 
+staff_privileges = 0
+
 # #Example users
 # Anj = 63997 (Cetus)
 # Maarten = 74797 (Pyxis)
@@ -26,10 +28,6 @@ temp_student_login = "limartin"
 # 321 = Il Maestro %login
 # 82 = [DEPRECATED] %login
 
-# example = Captain %login (1st)
-# example = Commodore %login (2nd)
-# etc
-# example = Landlubber %login (F)
 
 def main():
     print("Program started")
@@ -50,19 +48,24 @@ def main():
 def give_coalition_titles(coalition_id):
     # Make snapshot of all coalition members
     # (reduces number of API calls, prevents ranks changing whilst titles still being calculated)
-    snapshot_bundle = make_coalition_state_snapshot(coalition_id)
+    # snapshot_bundle = make_coalition_state_snapshot(coalition_id)
     # Determine student's title based on rank (calculate 'abstract' titles)
-    student_rank_info = calculate_coalition_ranks(snapshot_bundle)
+    # student_rank_info = calculate_coalition_ranks(snapshot_bundle)
     # Sort the list by rank because why not
-    student_rank_info = sort_by_rank(student_rank_info)
+    # student_rank_info = sort_by_rank(student_rank_info)
     # Fetch title_id based on abstract rank and title_config.yml
-    student_rank_info = append_title_ids(student_rank_info, coalition_id)
+    title_id_array = make_title_id_array(coalition_id)
+    make_all_titles_once(title_id_array)
+
+    # student_rank_info = append_title_ids(student_rank_info, title_id_array)
+    # Bestow all titles (if necessary)
+    # bestow_all_titles(student_rank_info, title_id_array)
 
     # (Optional) add readable intra login to student_rank_info
-    if 1 == 1:
-        student_rank_info = append_login_names(student_rank_info)
-        for entry in student_rank_info:
-            print(entry)
+    # if 1 == 1:
+    #     student_rank_info = append_login_names(student_rank_info)
+    #     for entry in student_rank_info:
+    #         print(entry)
 
     # Check all custom 'rank titles' -> for all ids that don't belong, bestow that ID a new title
     # When you bestow a 'rank' title, remove all other 'rank titles'
@@ -88,7 +91,8 @@ def calculate_coalition_ranks(snapshot_bundle):
     student_rank_info = [[] for x in range(number_of_students)]
     x = 0
     for entry in coalition_snapshot:
-        student_rank_info[x] = [entry['user_id'], entry['rank'], get_abstract_title(entry['rank'], lowest_rank), "title_id", "username"]
+        student_rank_info[x] = [entry['user_id'], entry['rank'], get_abstract_title(entry['rank'], lowest_rank),
+                                "title_id", "username"]
         x += 1
     return student_rank_info
 
@@ -117,7 +121,7 @@ def get_abstract_title(current_rank, lowest_rank):
     return "E"
 
 
-def append_title_ids(student_rank_info, coalition_id):
+def make_title_id_array(coalition_id):
     title_id_array = [0 for _ in range(36)]
     coalition_spec = 'vela'
     if coalition_id == cetus_coalition_id:
@@ -163,6 +167,10 @@ def append_title_ids(student_rank_info, coalition_id):
         title_id_array[33] = config['all_titles'][coalition_spec]['vD']
         title_id_array[34] = config['all_titles'][coalition_spec]['vE']
         title_id_array[35] = config['all_titles'][coalition_spec]['vF']
+    return title_id_array
+
+
+def append_title_ids(student_rank_info, title_id_array):
     for entry in student_rank_info:
         entry[3] = make_abstract_title_concrete(entry[2], title_id_array)
     return student_rank_info
@@ -333,6 +341,31 @@ def who_has_title(title_id):
     for entry in title_details:
         print(entry['user_id'])
 
+
+def give_title(title_id, student_id):
+    if staff_privileges == 1:
+        print(f"Attempting to give title_id {title_id} to student with id {student_id}")
+    else:
+        print(f"Attempting to give title_id {title_id} to student with id {student_id}")
+
+
+def remove_title(title_id, student_id):
+    if staff_privileges == 1:
+        print(f"Attempting to remove title_id {title_id} from student with id {student_id}")
+    else:
+        print(f"Attempting to remove title_id {title_id} from student with id {student_id}")
+
+
+def bestow_all_titles(student_rank_info, title_array):
+    return student_rank_info
+
+
+def make_all_titles_once(title_array):
+    for entry in title_array:
+        payload = {
+            "title[name]": entry
+        }
+        ic.post("titles", params=payload)
 
 if __name__ == "__main__":
     main()
