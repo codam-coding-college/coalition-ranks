@@ -11,6 +11,8 @@ vela_coalition_id = 60
 cetus_coalition_id = 59
 pyxis_coalition_id = 58
 
+# Vela title IDs = 424-459
+
 staff_privileges = 0
 
 # #Example users
@@ -48,24 +50,22 @@ def main():
 def give_coalition_titles(coalition_id):
     # Make snapshot of all coalition members
     # (reduces number of API calls, prevents ranks changing whilst titles still being calculated)
-    # snapshot_bundle = make_coalition_state_snapshot(coalition_id)
+    snapshot_bundle = make_coalition_state_snapshot(coalition_id)
     # Determine student's title based on rank (calculate 'abstract' titles)
-    # student_rank_info = calculate_coalition_ranks(snapshot_bundle)
+    student_rank_info = calculate_coalition_ranks(snapshot_bundle)
     # Sort the list by rank because why not
-    # student_rank_info = sort_by_rank(student_rank_info)
+    student_rank_info = sort_by_rank(student_rank_info)
     # Fetch title_id based on abstract rank and title_config.yml
     title_id_array = make_title_id_array(coalition_id)
-    make_all_titles_once(title_id_array)
-
-    # student_rank_info = append_title_ids(student_rank_info, title_id_array)
+    student_rank_info = append_title_ids(student_rank_info, title_id_array)
     # Bestow all titles (if necessary)
-    # bestow_all_titles(student_rank_info, title_id_array)
+    bestow_all_titles(student_rank_info, title_id_array)
 
     # (Optional) add readable intra login to student_rank_info
-    # if 1 == 1:
-    #     student_rank_info = append_login_names(student_rank_info)
-    #     for entry in student_rank_info:
-    #         print(entry)
+    if 1 == 1:
+        student_rank_info = append_login_names(student_rank_info)
+        for entry in student_rank_info:
+            print(entry)
 
     # Check all custom 'rank titles' -> for all ids that don't belong, bestow that ID a new title
     # When you bestow a 'rank' title, remove all other 'rank titles'
@@ -359,13 +359,6 @@ def remove_title(title_id, student_id):
 def bestow_all_titles(student_rank_info, title_array):
     return student_rank_info
 
-
-def make_all_titles_once(title_array):
-    for entry in title_array:
-        payload = {
-            "title[name]": entry
-        }
-        ic.post("titles", params=payload)
 
 if __name__ == "__main__":
     main()

@@ -1,41 +1,41 @@
   all_titles:
     vela:
-        v1: "Captain %login (1st)"
-        v2: "Commodore %login (2nd)"
-        v3: "Commander %login (3rd)"
-        v4: "Lieutenant %login (4th)"
-        v5: "Warrant Officer %login (5th)"
-        v6: "Master %login (6th)"
-        v7: "First Mate %login (7th)"
-        v8: "Second Mate %login (8th)"
-        v9: "Third Mate %login (9th)"
-        v10: "Midshipman %login (10th)"
-        v11: "Chief Steward %login (11th)"
-        v12: "Boatswain %login (12th)"
-        v13: "Shipwright %login (13th)"
-        v14: "Quartermaster %login (14th)"
-        v15: "Helmsman %login (15th)"
-        v16: "Skipper %login (16th)"
-        v17: "Ship's Corporal %login (17th)"
-        v18: "Watch Captain %login (18th)"
-        v19: "Privateer %login (19th)"
-        v20: "Mariner %login (20th)"
-        v21: "Sailmaker %login (21st)"
-        v22: "Caulker %login (22nd)"
-        v23: "Ropemaker %login (23rd)"
-        v24: "Captain's Clerk %login (24th)"
-        v25: "Master's Mate %login (25th)"
-        v26: "Midshipman's Mate %login (26th)"
-        v27: "Boatswain's Mate %login (27th)"
-        v28: "Quartermaster's Mate %login (28th)"
-        v29: "Sailmaker's Mate %login (29th)"
-        v30: "Caulker's Mate %login (30th)"
-        vA: "Leading Hand %login (A)"
-        vB: "Able Seaman %login (B)"
-        vC: "Ordinary Seaman %login (C)"
-        vD: "Swabby %login (D)"
-        vE: "Powder Monkey %login (E)"
-        vF: "Landlubber %login (F)"
+        v1: 424
+        v2: 425
+        v3: 426
+        v4: 427
+        v5: 428
+        v6: 429
+        v7: 430
+        v8: 431
+        v9: 432
+        v10: 433
+        v11: 434
+        v12: 435
+        v13: 436
+        v14: 437
+        v15: 438
+        v16: 439
+        v17: 440
+        v18: 441
+        v19: 442
+        v20: 443
+        v21: 444
+        v22: 445
+        v23: 446
+        v24: 447
+        v25: 448
+        v26: 449
+        v27: 450
+        v28: 451
+        v29: 452
+        v30: 453
+        vA: 454
+        vB: 455
+        vC: 456
+        vD: 457
+        vE: 458
+        vF: 459
     pyxis:
         v1: "Polaris %login (1st)"
         v2: "Ursa Major %login (2nd)"
