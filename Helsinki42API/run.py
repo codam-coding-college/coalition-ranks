@@ -6,44 +6,15 @@ from intra import ic
 
 # Specify Codam as campus_id
 campus_id = 14
-
+staff_privileges = 0
 vela_coalition_id = 60
+# Vela title IDs = 424-459
 cetus_coalition_id = 59
 pyxis_coalition_id = 58
-
-# Vela title IDs = 424-459
-
-staff_privileges = 0
-
-# #Example users
-# Anj = 63997 (Cetus)
-# Maarten = 74797 (Pyxis)
-# Peer = 57975 (Vela)
-# Turlough = 64081 (Vela)
-# Lindsay = 64068 (Vela)
-
-temp_student_id = 64068
-temp_student_login = "limartin"
-
-
-# Title IDs:
-# 321 = Il Maestro %login
-# 82 = [DEPRECATED] %login
 
 
 def main():
     print("Program started")
-    # temp_id = translate_login_to_id("tmullan")
-    # fetch_filtered_students()
-    # fetch_campus_students(campus_id)
-    # who_is_id(temp_student_id)
-    # who_is_login(temp_student_login)
-    # fetch_coalition_info_by_id(temp_student_id)
-    # fetch_student_info(temp_student_id)
-    # get_all_users_in_coalition(vela_coalition_id)
-    # fetch_students_titles(temp_id)
-    # what_is_title(82)
-    # who_has_title(321)
     give_coalition_titles(vela_coalition_id)
 
 
@@ -65,7 +36,7 @@ def give_coalition_titles(coalition_id):
     bestow_all_titles(student_rank_info, title_id_array, title_status_array)
     remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array, title_status_ids)
     # (Optional) add readable intra login to student_rank_info
-    if 1 == 0:
+    if 1 == 1:
         student_rank_info = append_login_names(student_rank_info)
         for entry in student_rank_info:
             print(entry)
@@ -84,6 +55,16 @@ def make_coalition_state_snapshot(coalition_id) -> object:
             lowest_rank = entry['rank']
     snapshot_bundle = [snapshot, number_of_students, lowest_rank]
     return snapshot_bundle
+
+
+# Get all users in coalition
+def get_all_users_in_coalition(coalition_id) -> object:
+    # print("Fetching all students from specified coalition:")
+    payload = {
+        "sort": "user_id"
+    }
+    data = ic.pages_threaded("coalitions/" + str(coalition_id) + "/coalitions_users", params=payload)
+    return data
 
 
 def calculate_coalition_ranks(snapshot_bundle):
@@ -121,6 +102,10 @@ def get_abstract_title(current_rank, lowest_rank):
     if current_rank <= individual_ranks + (tier_size * 4):
         return "D"
     return "E"
+
+
+def sort_by_rank(student_rank_info):
+    return sorted(student_rank_info, key=lambda x: x[1])
 
 
 def make_title_id_array(coalition_id):
@@ -196,159 +181,34 @@ def make_abstract_title_concrete(abstract_title, title_array):
         return title_array[abstract_title - 1]
 
 
-# Fetch list of all students
-def fetch_filtered_students():
-    print("Fetching student IDs based on the filters set:")
-    ic.progress_bar = True
+def make_title_status_array(title_id_array):
+    title_status_array = [[] for _ in range(36)]
+    title_status_ids = [[] for _ in range(36)]
+    x = 0
+    for entry in title_id_array:
+        title_bundle = who_has_title(entry)
+        title_status_array[x] = title_bundle[0]
+        title_status_ids[x] = title_bundle[1]
+        x += 1
+    title_bundle = [title_status_array, title_status_ids]
+    return title_bundle
+
+
+# Shows all students that have the specified title, regardless of whether it is 'selected'
+def who_has_title(title_id):
     payload = {
-        "filter[campus_id]": campus_id
-    }
-    all_students = ic.pages_threaded("campus_users", params=payload)
-    for user in all_students:
-        print(user['id'])
-
-
-# FETCH CAMPUS USERS:
-def fetch_campus_students(campus):
-    print("Fetching all students from specified campus:")
-    ic.progress_bar = True
-    payload = {
-        "range[login]": "4,zzz",
-        "sort": "login"
-    }
-    all_students = ic.pages_threaded("campus/" + str(campus) + "/users", params=payload)
-    for entry in all_students:
-        print(f"{entry['login']} == {entry['id']}")
-
-
-def append_login_names(student_rank_info):
-    print("Fetching all students from specified campus:")
-    ic.progress_bar = True
-    payload = {
-        "range[login]": "4,zzz",
-        "sort": "login"
-    }
-    all_students = ic.pages_threaded("campus/" + str(campus_id) + "/users", params=payload)
-    for entry in student_rank_info:
-        for kvp in all_students:
-            if kvp['id'] == entry[0]:
-                entry[4] = kvp['login']
-    return student_rank_info
-
-
-def sort_by_rank(student_rank_info):
-    return sorted(student_rank_info, key=lambda x: x[1])
-
-
-def who_is_id(student_id):
-    print("Finding the intra login associated with that ID:")
-    payload = {
-        "filter[id]": student_id,
-        "range[login]": "4,zzz",
-        "sort": "login"
-    }
-    specific_user = ic.pages_threaded("campus/" + str(campus_id) + "/users", params=payload)
-    for entry in specific_user:
-        print(f"{entry['id']} is {entry['login']}")
-
-
-def who_is_login(login):
-    print("Finding the id for the login specified:")
-    payload = {
-        "filter[login]": login,
-        "range[login]": "4,zzz",
-        "sort": "login"
-    }
-    specific_user = ic.pages_threaded("campus/" + str(campus_id) + "/users", params=payload)
-    for entry in specific_user:
-        print(f"{entry['login']} is {entry['id']}")
-
-
-def translate_login_to_id(login) -> int:
-    print("Returning id for the login specified.")
-    payload = {
-        "filter[login]": login,
-        "range[login]": "4,zzz",
-        "sort": "login"
-    }
-    specific_user = ic.pages_threaded("campus/" + str(campus_id) + "/users", params=payload)
-    if specific_user:
-        return specific_user[0]['id']
-    else:
-        print("Error translating id from login")
-        return 0
-
-
-# GET /v2/users/:user_id/coalitions_users
-def fetch_coalition_info_by_id(student_id):
-    print("Fetching coalition info for specified id:")
-    payload = {
-    }
-    user_coalition_response = ic.get("users/" + str(student_id) + "/coalitions_users", params=payload)
-    data = user_coalition_response.json()
-    for entry in data:
-        print(entry)
-
-
-# Get all users in coalition
-def get_all_users_in_coalition(coalition_id) -> object:
-    # print("Fetching all students from specified coalition:")
-    payload = {
+        # Doesn't take any params so the below is useless
+        "filter[campus_id]": campus_id,
         "sort": "user_id"
     }
-    data = ic.pages_threaded("coalitions/" + str(coalition_id) + "/coalitions_users", params=payload)
-    return data
-
-
-# FETCH A SINGLE USER:
-def fetch_student_info(student_id):
-    print("Fetching all general info on student specified by id:")
-    payload = {
-        "filter[id]": student_id
-    }
-    specific_user = ic.pages_threaded("users", params=payload)
-    for entry in specific_user:
-        print(entry)
-
-
-def fetch_students_titles(student_id):
-    print("Fetching all titles the specified student has access to:")
-    payload = {
-    }
-    specific_user = ic.pages_threaded("users/" + str(student_id) + "/titles_users", params=payload)
-    for entry in specific_user:
-        print(entry)
-
-
-def what_is_title(title_id):
-    print("Printing selected title's info:")
-    payload = {
-    }
-    title_details = ic.pages_threaded("titles/" + str(title_id), params=payload)
-    print(title_details)
-
-
-def give_title(title_id, student_id):
-    title_id = int(title_id)
-    if staff_privileges == 1:
-        payload = {
-            "titles_user[title_id]": title_id,
-            "titles_user[user_id]": student_id
-        }
-        ic.post("titles_users", params=payload)
-    else:
-        print(f"Attempting to give title_id {title_id} to student with id {student_id}")
-
-
-def remove_title(title_id, student_id, title_to_destroy):
-    title_to_destroy = int(title_to_destroy[0])
-    if staff_privileges == 1:
-        print(f"Attempting to remove title_id {title_id} from student with id {student_id}")
-    else:
-        print(f"Attempting to remove title_id {title_id} from student with id {student_id} (value {title_to_destroy})")
-        payload = {
-        }
-        ic.delete(f"titles_users/{title_to_destroy}", params=payload)
+    title_details = ic.pages_threaded("titles/" + str(title_id) + "/titles_users", params=payload)
+    user_id_array = []
+    id_array = []
+    for entry in title_details:
+        id_array.append(entry['id'])
+        user_id_array.append(entry['user_id'])
+    id_array_bundle = [user_id_array, id_array]
+    return id_array_bundle
 
 
 def bestow_all_titles(student_rank_info, title_id_array, title_status_array):
@@ -377,6 +237,28 @@ def get_title_index(title_id, title_id_array):
     return x
 
 
+def give_title(title_id, student_id):
+    title_id = int(title_id)
+    if staff_privileges == 1:
+        payload = {
+            "titles_user[title_id]": title_id,
+            "titles_user[user_id]": student_id
+        }
+        ic.post("titles_users", params=payload)
+    else:
+        print(f"Attempting to give title_id {title_id} to student with id {student_id}")
+
+
+def remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array, title_status_ids):
+    title_index = 0
+    for list_of_ids in title_status_array:
+        given_title = title_id_array[title_index]
+        title_to_destroy = title_status_ids[title_index]
+        for student_id in list_of_ids:
+            match_id_to_title(student_id, student_rank_info, given_title, title_to_destroy)
+        title_index += 1
+
+
 def match_id_to_title(student_id, student_rank_info, given_title, title_to_destroy):
     index = 0
     for student in student_rank_info:
@@ -387,45 +269,30 @@ def match_id_to_title(student_id, student_rank_info, given_title, title_to_destr
     return 1
 
 
-# Shows all students that have the specified title, regardless of whether it is 'selected'
-def who_has_title(title_id):
+def remove_title(title_id, student_id, title_to_destroy):
+    title_to_destroy = int(title_to_destroy[0])
+    if staff_privileges == 1:
+        print(f"Attempting to remove title_id {title_id} from student with id {student_id} (value {title_to_destroy})")
+        payload = {
+        }
+        ic.delete(f"titles_users/{title_to_destroy}", params=payload)
+    else:
+        print(f"Attempting to remove title_id {title_id} from student with id {student_id} (value {title_to_destroy})")
+
+
+def append_login_names(student_rank_info):
+    print("Fetching all students from specified campus:")
+    ic.progress_bar = True
     payload = {
-        # Doesn't take any params so the below is useless
-        "filter[campus_id]": campus_id,
-        "sort": "user_id"
+        "range[login]": "4,zzz",
+        "sort": "login"
     }
-    title_details = ic.pages_threaded("titles/" + str(title_id) + "/titles_users", params=payload)
-    user_id_array = []
-    id_array = []
-    for entry in title_details:
-        id_array.append(entry['id'])
-        user_id_array.append(entry['user_id'])
-    id_array_bundle = [user_id_array, id_array]
-    return id_array_bundle
-
-
-def make_title_status_array(title_id_array):
-    title_status_array = [[] for _ in range(36)]
-    title_status_ids = [[] for _ in range(36)]
-    x = 0
-    for entry in title_id_array:
-        title_bundle = who_has_title(entry)
-        title_status_array[x] = title_bundle[0]
-        title_status_ids[x] = title_bundle[1]
-        x += 1
-    title_bundle = [title_status_array, title_status_ids]
-    return title_bundle
-
-
-def remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array, title_status_ids):
-    title_index = 0
-    for list_of_ids in title_status_array:
-        given_title = title_id_array[title_index]
-        title_to_destroy = title_status_ids[title_index]
-        print (title_to_destroy)
-        for student_id in list_of_ids:
-            match_id_to_title(student_id, student_rank_info, given_title, title_to_destroy)
-        title_index += 1
+    all_students = ic.pages_threaded("campus/" + str(campus_id) + "/users", params=payload)
+    for entry in student_rank_info:
+        for kvp in all_students:
+            if kvp['id'] == entry[0]:
+                entry[4] = kvp['login']
+    return student_rank_info
 
 
 if __name__ == "__main__":
