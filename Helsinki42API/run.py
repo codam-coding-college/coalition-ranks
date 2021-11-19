@@ -61,12 +61,7 @@ def give_coalition_titles(coalition_id):
     title_status_array = make_title_status_array(title_id_array)
     # Bestow all titles (if necessary)
     bestow_all_titles(student_rank_info, title_id_array, title_status_array)
-    # remove_unwarranted_titles()
-    # TODO finish above function
-
-    #First check all titles, 4 cases: correct, incorrect, correct & incorrect, unassigned
-
-
+    remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array)
     # (Optional) add readable intra login to student_rank_info
     if 1 == 0:
         student_rank_info = append_login_names(student_rank_info)
@@ -97,7 +92,7 @@ def calculate_coalition_ranks(snapshot_bundle):
     x = 0
     for entry in coalition_snapshot:
         student_rank_info[x] = [entry['user_id'], entry['rank'], get_abstract_title(entry['rank'], lowest_rank),
-                                "title_id", "username", "title_status"]
+                                "title_id", "username"]
         x += 1
     return student_rank_info
 
@@ -338,7 +333,7 @@ def give_title(title_id, student_id):
             "titles_user[title_id]": title_id,
             "titles_user[user_id]": student_id
         }
-        title_details = ic.post("titles_users", params=payload)
+        ic.post("titles_users", params=payload)
     else:
         print(f"Attempting to give title_id {title_id} to student with id {student_id}")
 
@@ -348,7 +343,6 @@ def remove_title(title_id, student_id):
         print(f"Attempting to remove title_id {title_id} from student with id {student_id}")
     else:
         print(f"Attempting to remove title_id {title_id} from student with id {student_id}")
-
 
 def bestow_all_titles(student_rank_info, title_id_array, title_status_array):
     for student in student_rank_info:
@@ -376,7 +370,14 @@ def get_title_index(title_id, title_id_array):
     return x
 
 
-def get_student_index(student_id, student_rank_info):
+def match_id_to_title(student_id, student_rank_info, given_title):
+    index = 0
+    for student in student_rank_info:
+        if student[0] == student_id:
+            if student[3] == given_title:
+                return 0
+    remove_title(given_title, student_id)
+    return 1
 
 
 # Shows all students that have the specified title, regardless of whether it is 'selected'
@@ -387,10 +388,13 @@ def who_has_title(title_id):
         "sort": "user_id"
     }
     title_details = ic.pages_threaded("titles/" + str(title_id) + "/titles_users", params=payload)
+    user_id_array = []
     id_array = []
     for entry in title_details:
-        id_array.append(entry['user_id'])
-    return id_array
+        id_array.append(entry['id'])
+        user_id_array.append(entry['user_id'])
+    id_array_bundle = [user_id_array, id_array]
+    return user_id_array
 
 
 def make_title_status_array(title_id_array):
@@ -403,8 +407,12 @@ def make_title_status_array(title_id_array):
 
 
 def remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array):
+    title_index = 0
     for list_of_ids in title_status_array:
-        for id in list_of_ids:
+        given_title = title_id_array[title_index]
+        for student_id in list_of_ids:
+            match_id_to_title(student_id, student_rank_info, given_title)
+        title_index += 1
 
 
 if __name__ == "__main__":
