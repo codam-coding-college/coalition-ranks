@@ -58,11 +58,17 @@ def give_coalition_titles(coalition_id):
     # Fetch title_id based on abstract rank and title_config.yml
     title_id_array = make_title_id_array(coalition_id)
     student_rank_info = append_title_ids(student_rank_info, title_id_array)
+    title_status_array = make_title_status_array(title_id_array)
     # Bestow all titles (if necessary)
-    bestow_all_titles(student_rank_info, title_id_array)
+    bestow_all_titles(student_rank_info, title_id_array, title_status_array)
+    # remove_unwarranted_titles()
+    # TODO finish above function
+
+    #First check all titles, 4 cases: correct, incorrect, correct & incorrect, unassigned
+
 
     # (Optional) add readable intra login to student_rank_info
-    if 1 == 1:
+    if 1 == 0:
         student_rank_info = append_login_names(student_rank_info)
         for entry in student_rank_info:
             print(entry)
@@ -87,12 +93,11 @@ def calculate_coalition_ranks(snapshot_bundle):
     coalition_snapshot = snapshot_bundle[0]
     number_of_students = snapshot_bundle[1]
     lowest_rank = snapshot_bundle[2]
-    x = 0
-    student_rank_info = [[] for x in range(number_of_students)]
+    student_rank_info = [[] for _ in range(number_of_students)]
     x = 0
     for entry in coalition_snapshot:
         student_rank_info[x] = [entry['user_id'], entry['rank'], get_abstract_title(entry['rank'], lowest_rank),
-                                "title_id", "username"]
+                                "title_id", "username", "title_status"]
         x += 1
     return student_rank_info
 
@@ -235,9 +240,6 @@ def append_login_names(student_rank_info):
 
 
 def sort_by_rank(student_rank_info):
-    # reverse = None (Sorts in Ascending order)
-    # key is set to sort using second element of
-    # sublist lambda has been used
     return sorted(student_rank_info, key=lambda x: x[1])
 
 
@@ -329,22 +331,14 @@ def what_is_title(title_id):
     print(title_details)
 
 
-# Shows all students that have the specified title, regardless of whether it is 'selected'
-def who_has_title(title_id):
-    print("Printing selected title's info:")
-    payload = {
-        # Doesn't take any params so the below is useless
-        "filter[campus_id]": campus_id,
-        "sort": "user_id"
-    }
-    title_details = ic.pages_threaded("titles/" + str(title_id) + "/titles_users", params=payload)
-    for entry in title_details:
-        print(entry['user_id'])
-
-
 def give_title(title_id, student_id):
+    title_id = int(title_id)
     if staff_privileges == 1:
-        print(f"Attempting to give title_id {title_id} to student with id {student_id}")
+        payload = {
+            "titles_user[title_id]": title_id,
+            "titles_user[user_id]": student_id
+        }
+        title_details = ic.post("titles_users", params=payload)
     else:
         print(f"Attempting to give title_id {title_id} to student with id {student_id}")
 
@@ -356,8 +350,61 @@ def remove_title(title_id, student_id):
         print(f"Attempting to remove title_id {title_id} from student with id {student_id}")
 
 
-def bestow_all_titles(student_rank_info, title_array):
+def bestow_all_titles(student_rank_info, title_id_array, title_status_array):
+    for student in student_rank_info:
+        give_title_if_not_owned(student, title_id_array, title_status_array)
     return student_rank_info
+
+
+def give_title_if_not_owned(student, title_id_array, title_status_array):
+    student_user_id = student[0]
+    student_title_id = student[3]
+    title_id_index = get_title_index(student_title_id, title_id_array)
+    for entry in title_status_array[title_id_index]:
+        if entry == student_user_id:
+            return 0
+    give_title(student_title_id, student_user_id)
+    return 1
+
+
+def get_title_index(title_id, title_id_array):
+    x = 0
+    for entry in title_id_array:
+        if entry == title_id:
+            return x
+        x += 1
+    return x
+
+
+def get_student_index(student_id, student_rank_info):
+
+
+# Shows all students that have the specified title, regardless of whether it is 'selected'
+def who_has_title(title_id):
+    payload = {
+        # Doesn't take any params so the below is useless
+        "filter[campus_id]": campus_id,
+        "sort": "user_id"
+    }
+    title_details = ic.pages_threaded("titles/" + str(title_id) + "/titles_users", params=payload)
+    id_array = []
+    for entry in title_details:
+        id_array.append(entry['user_id'])
+    return id_array
+
+
+def make_title_status_array(title_id_array):
+    title_status_array = [[] for _ in range(36)]
+    x = 0
+    for entry in title_id_array:
+        title_status_array[x] = who_has_title(entry)
+        x += 1
+    return title_status_array
+
+
+def remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array):
+    for list_of_ids in title_status_array:
+        for id in list_of_ids:
 
 
 if __name__ == "__main__":
