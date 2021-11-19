@@ -58,10 +58,12 @@ def give_coalition_titles(coalition_id):
     # Fetch title_id based on abstract rank and title_config.yml
     title_id_array = make_title_id_array(coalition_id)
     student_rank_info = append_title_ids(student_rank_info, title_id_array)
-    title_status_array = make_title_status_array(title_id_array)
+    title_status_bundle = make_title_status_array(title_id_array)
+    title_status_array = title_status_bundle[0]
+    title_status_ids = title_status_bundle[1]
     # Bestow all titles (if necessary)
     bestow_all_titles(student_rank_info, title_id_array, title_status_array)
-    remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array)
+    remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array, title_status_ids)
     # (Optional) add readable intra login to student_rank_info
     if 1 == 0:
         student_rank_info = append_login_names(student_rank_info)
@@ -338,11 +340,16 @@ def give_title(title_id, student_id):
         print(f"Attempting to give title_id {title_id} to student with id {student_id}")
 
 
-def remove_title(title_id, student_id):
+def remove_title(title_id, student_id, title_to_destroy):
+    title_to_destroy = int(title_to_destroy[0])
     if staff_privileges == 1:
         print(f"Attempting to remove title_id {title_id} from student with id {student_id}")
     else:
-        print(f"Attempting to remove title_id {title_id} from student with id {student_id}")
+        print(f"Attempting to remove title_id {title_id} from student with id {student_id} (value {title_to_destroy})")
+        payload = {
+        }
+        ic.delete(f"titles_users/{title_to_destroy}", params=payload)
+
 
 def bestow_all_titles(student_rank_info, title_id_array, title_status_array):
     for student in student_rank_info:
@@ -370,13 +377,13 @@ def get_title_index(title_id, title_id_array):
     return x
 
 
-def match_id_to_title(student_id, student_rank_info, given_title):
+def match_id_to_title(student_id, student_rank_info, given_title, title_to_destroy):
     index = 0
     for student in student_rank_info:
         if student[0] == student_id:
             if student[3] == given_title:
                 return 0
-    remove_title(given_title, student_id)
+    remove_title(given_title, student_id, title_to_destroy)
     return 1
 
 
@@ -394,24 +401,30 @@ def who_has_title(title_id):
         id_array.append(entry['id'])
         user_id_array.append(entry['user_id'])
     id_array_bundle = [user_id_array, id_array]
-    return user_id_array
+    return id_array_bundle
 
 
 def make_title_status_array(title_id_array):
     title_status_array = [[] for _ in range(36)]
+    title_status_ids = [[] for _ in range(36)]
     x = 0
     for entry in title_id_array:
-        title_status_array[x] = who_has_title(entry)
+        title_bundle = who_has_title(entry)
+        title_status_array[x] = title_bundle[0]
+        title_status_ids[x] = title_bundle[1]
         x += 1
-    return title_status_array
+    title_bundle = [title_status_array, title_status_ids]
+    return title_bundle
 
 
-def remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array):
+def remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array, title_status_ids):
     title_index = 0
     for list_of_ids in title_status_array:
         given_title = title_id_array[title_index]
+        title_to_destroy = title_status_ids[title_index]
+        print (title_to_destroy)
         for student_id in list_of_ids:
-            match_id_to_title(student_id, student_rank_info, given_title)
+            match_id_to_title(student_id, student_rank_info, given_title, title_to_destroy)
         title_index += 1
 
 
