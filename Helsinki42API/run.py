@@ -7,6 +7,7 @@ from intra import ic
 # Specify Codam as campus_id
 campus_id = 14
 staff_privileges = 0
+print_summary = 0
 vela_coalition_id = 60
 # Vela title IDs = 424-459
 cetus_coalition_id = 59
@@ -19,30 +20,52 @@ def main():
 
 
 def give_coalition_titles(coalition_id):
-    # Make snapshot of all coalition members
-    # (reduces number of API calls, prevents ranks changing whilst titles still being calculated)
+    # First we make a snapshot of the current state of the coalition and its members with one API call
+    # (this reduces the overall number of API calls & prevents ranks changing whilst titles are still being calculated)
     snapshot_bundle = make_coalition_state_snapshot(coalition_id)
-    # Determine student's title based on rank (calculate 'abstract' titles)
-    student_rank_info = calculate_coalition_ranks(snapshot_bundle)
-    # Sort the list by rank because why not
-    student_rank_info = sort_by_rank(student_rank_info)
-    # Fetch title_id based on abstract rank and title_config.yml
+
+    # Then we make a 2D array,
+    # per student it has fields for a student's id, rank, 'abstract_title', intra title_id, and username.
+    # The actual title_id and username are added later, these initially just have placeholders.
+    student_rank_info = make_student_rank_info(snapshot_bundle)
+
+    # Before we can translate the users 'abstract_title' (that indicates what type of title the user should have)
+    # to the users actual title_id, we must fetch the title_ids for this coalition. We store these in title_id_array.
     title_id_array = make_title_id_array(coalition_id)
+
+    # Now we add the title_id to the entries in student_rank_info, based on those specified by title_id_array
     student_rank_info = append_title_ids(student_rank_info, title_id_array)
+
+    # Next we fetch information about who has what titles, retrieving two separate 2D arrays from the same API call
     title_status_bundle = make_title_status_array(title_id_array)
-    title_status_array = title_status_bundle[0]
-    title_status_ids = title_status_bundle[1]
-    # Bestow all titles (if necessary)
-    bestow_all_titles(student_rank_info, title_id_array, title_status_array)
-    remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array, title_status_ids)
-    # (Optional) add readable intra login to student_rank_info
-    if 1 == 1:
+
+    # The first 2D array we retrieve from title_status_bundle is ids_that_have_title.
+    # It contains all the student_ids that already have one of our custom coalition titles,
+    # all ids that have the highest title are saved at the first index
+    # and a list of all ids that have the title_id corresponding to the lowest rank are saved in the last (36th) index.
+    ids_that_have_title = title_status_bundle[0]
+
+    # The second 2D array we retrieve from title_status_bundle is title_deletion_ids.
+    # Intra makes a unique id for every student_id that has a title_id, and this unique id is needed to delete that
+    # instance of the title for that user.
+    # These 'deletion_ids' are saved separately and passed to the relevant function when a title needs to be removed.
+    title_deletion_ids = title_status_bundle[1]
+
+    # First we give all students the title they should have
+    # (this means all students always have at least one custom coalition title, and are never title-less).
+    # We only explicitly give a student a new title if they don't have it already, however.
+    bestow_all_titles(student_rank_info, title_id_array, ids_that_have_title)
+
+    # Then we check all our custom coalition rank based titles, and delete any titles a user should not have anymore.
+    remove_unwarranted_titles(student_rank_info, title_id_array, ids_that_have_title, title_deletion_ids)
+
+    # To print an optional summary of who has what title, set print_summary to 1 in the above global variables.
+    # This does slow down the program however,
+    # as it makes a separate API call to fetch the login names of all un-anonymised Codam students.
+    if print_summary == 1:
         student_rank_info = append_login_names(student_rank_info)
         for entry in student_rank_info:
             print(entry)
-
-    # Check all custom 'rank titles' -> for all ids that don't belong, bestow that ID a new title
-    # When you bestow a 'rank' title, remove all other 'rank titles'
 
 
 def make_coalition_state_snapshot(coalition_id) -> object:
@@ -57,9 +80,7 @@ def make_coalition_state_snapshot(coalition_id) -> object:
     return snapshot_bundle
 
 
-# Get all users in coalition
 def get_all_users_in_coalition(coalition_id) -> object:
-    # print("Fetching all students from specified coalition:")
     payload = {
         "sort": "user_id"
     }
@@ -67,7 +88,7 @@ def get_all_users_in_coalition(coalition_id) -> object:
     return data
 
 
-def calculate_coalition_ranks(snapshot_bundle):
+def make_student_rank_info(snapshot_bundle):
     coalition_snapshot = snapshot_bundle[0]
     number_of_students = snapshot_bundle[1]
     lowest_rank = snapshot_bundle[2]
@@ -77,6 +98,8 @@ def calculate_coalition_ranks(snapshot_bundle):
         student_rank_info[x] = [entry['user_id'], entry['rank'], get_abstract_title(entry['rank'], lowest_rank),
                                 "title_id", "username"]
         x += 1
+    # Sort the list by rank because why not
+    student_rank_info = sort_by_rank(student_rank_info)
     return student_rank_info
 
 
@@ -118,42 +141,10 @@ def make_title_id_array(coalition_id):
     base_dir = os.path.dirname(os.path.realpath(__file__))
     with open(base_dir + '/title_config.yml', 'r') as cfg_stream:
         config = yaml.load(cfg_stream, Loader=yaml.BaseLoader)
-        title_id_array[0] = config['all_titles'][coalition_spec]['v1']
-        title_id_array[1] = config['all_titles'][coalition_spec]['v2']
-        title_id_array[2] = config['all_titles'][coalition_spec]['v3']
-        title_id_array[3] = config['all_titles'][coalition_spec]['v4']
-        title_id_array[4] = config['all_titles'][coalition_spec]['v5']
-        title_id_array[5] = config['all_titles'][coalition_spec]['v6']
-        title_id_array[6] = config['all_titles'][coalition_spec]['v7']
-        title_id_array[7] = config['all_titles'][coalition_spec]['v8']
-        title_id_array[8] = config['all_titles'][coalition_spec]['v9']
-        title_id_array[9] = config['all_titles'][coalition_spec]['v10']
-        title_id_array[10] = config['all_titles'][coalition_spec]['v11']
-        title_id_array[11] = config['all_titles'][coalition_spec]['v12']
-        title_id_array[12] = config['all_titles'][coalition_spec]['v13']
-        title_id_array[13] = config['all_titles'][coalition_spec]['v14']
-        title_id_array[14] = config['all_titles'][coalition_spec]['v15']
-        title_id_array[15] = config['all_titles'][coalition_spec]['v16']
-        title_id_array[16] = config['all_titles'][coalition_spec]['v17']
-        title_id_array[17] = config['all_titles'][coalition_spec]['v18']
-        title_id_array[18] = config['all_titles'][coalition_spec]['v19']
-        title_id_array[19] = config['all_titles'][coalition_spec]['v20']
-        title_id_array[20] = config['all_titles'][coalition_spec]['v21']
-        title_id_array[21] = config['all_titles'][coalition_spec]['v22']
-        title_id_array[22] = config['all_titles'][coalition_spec]['v23']
-        title_id_array[23] = config['all_titles'][coalition_spec]['v24']
-        title_id_array[24] = config['all_titles'][coalition_spec]['v25']
-        title_id_array[25] = config['all_titles'][coalition_spec]['v26']
-        title_id_array[26] = config['all_titles'][coalition_spec]['v27']
-        title_id_array[27] = config['all_titles'][coalition_spec]['v28']
-        title_id_array[28] = config['all_titles'][coalition_spec]['v29']
-        title_id_array[29] = config['all_titles'][coalition_spec]['v30']
-        title_id_array[30] = config['all_titles'][coalition_spec]['vA']
-        title_id_array[31] = config['all_titles'][coalition_spec]['vB']
-        title_id_array[32] = config['all_titles'][coalition_spec]['vC']
-        title_id_array[33] = config['all_titles'][coalition_spec]['vD']
-        title_id_array[34] = config['all_titles'][coalition_spec]['vE']
-        title_id_array[35] = config['all_titles'][coalition_spec]['vF']
+        x = 0
+        for _ in range(36):
+            title_id_array[x] = config['all_titles'][coalition_spec][str(x + 1)]
+            x += 1
     return title_id_array
 
 
@@ -197,16 +188,13 @@ def make_title_status_array(title_id_array):
 # Shows all students that have the specified title, regardless of whether it is 'selected'
 def who_has_title(title_id):
     payload = {
-        # Doesn't take any params so the below is useless
-        "filter[campus_id]": campus_id,
-        "sort": "user_id"
     }
     title_details = ic.pages_threaded("titles/" + str(title_id) + "/titles_users", params=payload)
     user_id_array = []
     id_array = []
     for entry in title_details:
-        id_array.append(entry['id'])
         user_id_array.append(entry['user_id'])
+        id_array.append(entry['id'])
     id_array_bundle = [user_id_array, id_array]
     return id_array_bundle
 
@@ -249,35 +237,44 @@ def give_title(title_id, student_id):
         print(f"Attempting to give title_id {title_id} to student with id {student_id}")
 
 
-def remove_unwarranted_titles(student_rank_info, title_id_array, title_status_array, title_status_ids):
+def remove_unwarranted_titles(student_rank_info, title_id_array, ids_that_have_title, title_deletion_ids):
     title_index = 0
-    for list_of_ids in title_status_array:
+    for list_of_ids in ids_that_have_title:
         given_title = title_id_array[title_index]
-        title_to_destroy = title_status_ids[title_index]
+        title_list_to_destroy_from = title_deletion_ids[title_index]
         for student_id in list_of_ids:
-            match_id_to_title(student_id, student_rank_info, given_title, title_to_destroy)
+            match_id_to_title(student_id, student_rank_info, given_title, ids_that_have_title[title_index],
+                              title_list_to_destroy_from)
         title_index += 1
 
 
-def match_id_to_title(student_id, student_rank_info, given_title, title_to_destroy):
-    index = 0
+def match_id_to_title(student_id, student_rank_info, given_title, list_of_ids, title_list_to_destroy_from):
     for student in student_rank_info:
         if student[0] == student_id:
             if student[3] == given_title:
                 return 0
+    index = get_student_index(student_id, list_of_ids)
+    title_to_destroy = int(title_list_to_destroy_from[index])
     remove_title(given_title, student_id, title_to_destroy)
     return 1
 
 
 def remove_title(title_id, student_id, title_to_destroy):
-    title_to_destroy = int(title_to_destroy[0])
     if staff_privileges == 1:
-        print(f"Attempting to remove title_id {title_id} from student with id {student_id} (value {title_to_destroy})")
         payload = {
         }
         ic.delete(f"titles_users/{title_to_destroy}", params=payload)
     else:
         print(f"Attempting to remove title_id {title_id} from student with id {student_id} (value {title_to_destroy})")
+
+
+def get_student_index(student_id, list_of_ids):
+    x = 0
+    for index in list_of_ids:
+        if index == student_id:
+            return x
+        x += 1
+    return 0
 
 
 def append_login_names(student_rank_info):

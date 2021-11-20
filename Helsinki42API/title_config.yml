@@ -1,112 +1,121 @@
   all_titles:
     vela:
-        v1: 424
-        v2: 425
-        v3: 426
-        v4: 427
-        v5: 428
-        v6: 429
-        v7: 430
-        v8: 431
-        v9: 432
-        v10: 433
-        v11: 434
-        v12: 435
-        v13: 436
-        v14: 437
-        v15: 438
-        v16: 439
-        v17: 440
-        v18: 441
-        v19: 442
-        v20: 443
-        v21: 444
-        v22: 445
-        v23: 446
-        v24: 447
-        v25: 448
-        v26: 449
-        v27: 450
-        v28: 451
-        v29: 452
-        v30: 453
-        vA: 454
-        vB: 455
-        vC: 456
-        vD: 457
-        vE: 458
-        vF: 459
+        # The top 30 get unique titles (one per person, unless they are tied)
+        1: 424
+        2: 425
+        3: 426
+        4: 427
+        5: 428
+        6: 429
+        7: 430
+        8: 431
+        9: 432
+        10: 433
+        11: 434
+        12: 435
+        13: 436
+        14: 437
+        15: 438
+        16: 439
+        17: 440
+        18: 441
+        19: 442
+        20: 443
+        21: 444
+        22: 445
+        23: 446
+        24: 447
+        25: 448
+        26: 449
+        27: 450
+        28: 451
+        29: 452
+        30: 453
+        # Tiered Ranks (multiple people have the same title, ~20% of active coalition members)
+        31: 454
+        32: 455
+        33: 456
+        34: 457
+        35: 458
+        # Inactive students have this title (people with 0 points, or that have the lowest rank)
+        36: 459
     pyxis:
-        v1: "Polaris %login (1st)"
-        v2: "Ursa Major %login (2nd)"
-        v3: "Ursa Minor %login (3rd)"
-        v4: "Aries %login (4th)"
-        v5: "Taurus %login (5th)"
-        v6: "Gemini %login (6th)"
-        v7: "Karkinos %login (7th)"
-        v8: "Leo %login (8th)"
-        v9: "Virgo %login (9th)"
-        v10: "Libra %login (10th)"
-        v11: "Scorpio %login (11th)"
-        v12: "Sagittarius %login (12th)"
-        v13: "Capricorn %login (13th)"
-        v14: "Aquarius %login (14th)"
-        v15: "Pisces %login (15th)"
-        v16: "Ophiuchus %login (16th)"
-        v17: "Corona Australis %login (17th)"
-        v18: "Corona Borealis %login (18th)"
-        v19: "Andromeda %login (19th)"
-        v20: "Centauri %login (20th)"
-        v21: "Cassiopeia %login (21st)"
-        v22: "Cygnus %login (22nd)"
-        v23: "Draco %login (23rd)"
-        v24: "Hercules %login (24th)"
-        v25: "Hydra %login (25th)"
-        v26: "Lupus %login (26th)"
-        v27: "Lyra %login (27th)"
-        v28: "Orion %login (28th)"
-        v29: "Pegasus %login (29th)"
-        v30: "Serpens %login (30th)"
-        vA: "Aquila %login (A)"
-        vB: "Boötes %login (B)"
-        vC: "Corvus %login (C)"
-        vD: "Delphinus %login (D)"
-        vE: "Equuleus %login (E)"
-        vF: "Fornax %login (F)"
+        # Unique titles (one per person)
+        1: "Polaris %login (1st)"
+        2: "Ursa Major %login (2nd)"
+        3: "Ursa Minor %login (3rd)"
+        4: "Aries %login (4th)"
+        5: "Taurus %login (5th)"
+        6: "Gemini %login (6th)"
+        7: "Karkinos %login (7th)"
+        8: "Leo %login (8th)"
+        9: "Virgo %login (9th)"
+        10: "Libra %login (10th)"
+        11: "Scorpio %login (11th)"
+        12: "Sagittarius %login (12th)"
+        13: "Capricorn %login (13th)"
+        14: "Aquarius %login (14th)"
+        15: "Pisces %login (15th)"
+        16: "Ophiuchus %login (16th)"
+        17: "Corona Australis %login (17th)"
+        18: "Corona Borealis %login (18th)"
+        19: "Andromeda %login (19th)"
+        20: "Centauri %login (20th)"
+        21: "Cassiopeia %login (21st)"
+        22: "Cygnus %login (22nd)"
+        23: "Draco %login (23rd)"
+        24: "Hercules %login (24th)"
+        25: "Hydra %login (25th)"
+        26: "Lupus %login (26th)"
+        27: "Lyra %login (27th)"
+        28: "Orion %login (28th)"
+        29: "Pegasus %login (29th)"
+        30: "Serpens %login (30th)"
+        # Tiered Ranks (multiple people have the same title, ~20% of active coalition members)
+        31: "Aquila %login (A)"
+        32: "Boötes %login (B)"
+        33: "Corvus %login (C)"
+        34: "Delphinus %login (D)"
+        35: "Equuleus %login (E)"
+        # Inactive students have this title (people with 0 points, or that have the lowest rank)
+        36: "Fornax %login (F)"
     cetus:
-        v1: "Great Whale %login (1st)"
-        v2: "Killer Whale %login (2nd)"
-        v3: "Blue Whale %login (3rd)"
-        v4: "Right Whale %login (4th)"
-        v5: "Fin Whale %login (5th)"
-        v6: "Bowhead Whale %login (6th)"
-        v7: "Sperm Whale %login (7th)"
-        v8: "Grey Whale %login (8th)"
-        v9: "Humpback Whale %login (9th)"
-        v10: "Bryde's Whale %login (10th)"
-        v11: "Sei Whale %login (11th)"
-        v12: "Bottlenose Whale %login (12th)"
-        v13: "Pilot Whale %login (13th)"
-        v14: "False Killer Whale %login (14th)"
-        v15: "Beluga Whale %login (15th)"
-        v16: "Melon-headed Whale %login (16th)"
-        v17: "Pygmy Killer Whale %login (17th)"
-        v18: "Pygmy Right Whale %login (18th)"
-        v19: "Pygmy Beaked Whale %login (19th)"
-        v20: "Pygmy Sperm Whale %login (20th)"
-        v21: "Dwarf Sperm Whale %login (21st)"
-        v22: "Narwhal %login (22nd)"
-        v23: "Right Whale Dolphin %login (23rd)"
-        v24: "Bottlenose Dolphin %login (24th)"
-        v25: "White-Beaked Dolphin %login (25th)"
-        v26: "River Dolphin %login (26th)"
-        v27: "Snubfin Dolphin %login (27th)"
-        v28: "Hourglass Dolphin %login (28th)"
-        v29: "Dusky Dolphin %login (29th)"
-        v30: "Spinner Dolphin %login (30th)"
-        vA: "Common Dolphin %login (A)"
-        vB: "Porpoise %login (B)"
-        vC: "Manatee %login (C)"
-        vD: "Guppy %login (D)"
-        vE: "Krill %login (E)"
-        vF: "Beached Whale %login (F)"
+        # Unique titles (one per person)
+        1: "Great Whale %login (1st)"
+        2: "Killer Whale %login (2nd)"
+        3: "Blue Whale %login (3rd)"
+        4: "Right Whale %login (4th)"
+        5: "Fin Whale %login (5th)"
+        6: "Bowhead Whale %login (6th)"
+        7: "Sperm Whale %login (7th)"
+        8: "Grey Whale %login (8th)"
+        9: "Humpback Whale %login (9th)"
+        10: "Bryde's Whale %login (10th)"
+        11: "Sei Whale %login (11th)"
+        12: "Bottlenose Whale %login (12th)"
+        13: "Pilot Whale %login (13th)"
+        14: "False Killer Whale %login (14th)"
+        15: "Beluga Whale %login (15th)"
+        16: "Melon-headed Whale %login (16th)"
+        17: "Pygmy Killer Whale %login (17th)"
+        18: "Pygmy Right Whale %login (18th)"
+        19: "Pygmy Beaked Whale %login (19th)"
+        20: "Pygmy Sperm Whale %login (20th)"
+        21: "Dwarf Sperm Whale %login (21st)"
+        22: "Narwhal %login (22nd)"
+        23: "Right Whale Dolphin %login (23rd)"
+        24: "Bottlenose Dolphin %login (24th)"
+        25: "White-Beaked Dolphin %login (25th)"
+        26: "River Dolphin %login (26th)"
+        27: "Snubfin Dolphin %login (27th)"
+        28: "Hourglass Dolphin %login (28th)"
+        29: "Dusky Dolphin %login (29th)"
+        30: "Spinner Dolphin %login (30th)"
+        # Tiered Ranks (multiple people have the same title, ~20% of active coalition members)
+        31: "Common Dolphin %login (A)"
+        32: "Porpoise %login (B)"
+        33: "Manatee %login (C)"
+        34: "Guppy %login (D)"
+        35: "Krill %login (E)"
+        # Inactive students have this title (people with 0 points, or that have the lowest rank)
+        36: "Beached Whale %login (F)"
