@@ -2,7 +2,7 @@
 import os
 import yaml
 
-from intra import ic
+from Helsinki_42API_interface import ic
 
 # Specify Codam as campus_id
 campus_id = 14
@@ -15,7 +15,7 @@ pyxis_coalition_id = 58
 
 
 def main():
-    print("Program started")
+    print("Script started")
     give_coalition_titles(vela_coalition_id)
 
 

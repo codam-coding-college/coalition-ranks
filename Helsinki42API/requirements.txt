@@ -1,4 +1,0 @@
-PyYAML==5.4
-requests==2.25.1
-tqdm==4.56.0
-Pygments==2.9.0
