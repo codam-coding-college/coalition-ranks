@@ -82,7 +82,7 @@
     cetus:
         # Unique titles (one per person)
         1: "Blue Whale %login (1st)" #150 tons
-        2: "Moby Dick (2nd)" #fictional, technically a huge Sperm Whale though
+        2: "Moby Dick %login (2nd)" #fictional, technically a huge Sperm Whale though
         3: "Killer Whale %login (3rd)" # 5 tons but it sounds cool
         4: "Right Whale %login (4th)" #80 tons
         5: "Fin Whale %login (5th)" #80 tons
