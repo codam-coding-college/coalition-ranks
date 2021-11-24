@@ -81,41 +81,41 @@
         36: "Fornax %login (F)"
     cetus:
         # Unique titles (one per person)
-        1: "Great Whale %login (1st)"
-        2: "Killer Whale %login (2nd)"
-        3: "Blue Whale %login (3rd)"
-        4: "Right Whale %login (4th)"
-        5: "Fin Whale %login (5th)"
-        6: "Bowhead Whale %login (6th)"
-        7: "Sperm Whale %login (7th)"
-        8: "Grey Whale %login (8th)"
-        9: "Humpback Whale %login (9th)"
-        10: "Bryde's Whale %login (10th)"
-        11: "Sei Whale %login (11th)"
-        12: "Bottlenose Whale %login (12th)"
-        13: "Pilot Whale %login (13th)"
-        14: "False Killer Whale %login (14th)"
-        15: "Beluga Whale %login (15th)"
-        16: "Melon-headed Whale %login (16th)"
-        17: "Pygmy Killer Whale %login (17th)"
-        18: "Pygmy Right Whale %login (18th)"
-        19: "Pygmy Beaked Whale %login (19th)"
-        20: "Pygmy Sperm Whale %login (20th)"
-        21: "Dwarf Sperm Whale %login (21st)"
-        22: "Narwhal %login (22nd)"
-        23: "Right Whale Dolphin %login (23rd)"
-        24: "Bottlenose Dolphin %login (24th)"
-        25: "White-Beaked Dolphin %login (25th)"
-        26: "River Dolphin %login (26th)"
-        27: "Snubfin Dolphin %login (27th)"
-        28: "Hourglass Dolphin %login (28th)"
-        29: "Dusky Dolphin %login (29th)"
-        30: "Spinner Dolphin %login (30th)"
+        1: "Blue Whale %login (1st)" #150 tons
+        2: "Moby Dick (2nd)" #fictional, technically a huge Sperm Whale though
+        3: "Killer Whale %login (3rd)" # 5 tons but it sounds cool
+        4: "Right Whale %login (4th)" #80 tons
+        5: "Fin Whale %login (5th)" #80 tons
+        6: "Bowhead Whale %login (6th)" #60 tons
+        7: "Cachalot %login (7th)" # Aka Sperm Whale, 50 tons
+        8: "Grey Whale %login (8th)" #40 tons
+        9: "Humpback Whale %login (9th)" #30 tons
+        10: "Bryde's Whale %login (10th)" #30 tons
+        11: "Sei Whale %login (11th)" #25 tons
+        12: "Minke Whale %login (12th)" #10 tons
+        13: "Omura's Whale %login (13th)" #Unknown, but bigger than Minke Whale
+        14: "Bottlenose Whale %login (14th)" #7 tons
+        15: "Pilot Whale %login (15th)" #4 tons
+        16: "Goose-Beaked Whale %login (16th)" #3 tons (Also known as Cuvier's beaked whale -> the one that can dive deepest on record)
+        17: "False Killer Whale %login (17th)" #2 tons
+        18: "Beluga Whale %login (18th)" #1.5 tons
+        19: "Narwhal %login (19th)" #1.5 tons
+        20: "Melon-Headed Whale %login (20th)" #225 kg
+        21: "Baiji %login (21st)" #130 kg
+        22: "Right Whale Dolphin %login (22nd)" #115 kg, but has 'Whale' in its name
+        23: "Bottlenose Dolphin %login (23rd)" #650 kg
+        24: "Humpback Dolphin %login (24th)" #280kg
+        25: "White-Beaked Dolphin %login (25th)" #180 kg
+        26: "River Dolphin %login (26th)" #150 kg
+        27: "Snubfin Dolphin %login (27th)" #145 kg
+        28: "Hourglass Dolphin %login (28th)" #120 kg
+        29: "Dusky Dolphin %login (29th)" #100 kg
+        30: "Spinner Dolphin %login (30th)" #90kg
         # Tiered Ranks (multiple people have the same title, ~20% of active coalition members)
-        31: "Common Dolphin %login (A)"
-        32: "Porpoise %login (B)"
-        33: "Manatee %login (C)"
-        34: "Guppy %login (D)"
-        35: "Krill %login (E)"
+        31: "Common Dolphin %login (A)" #150 kg, but has 'Common' in its name
+        32: "Spectacled Porpoise %login (B)" #84 kg
+        33: "Manatee %login (C)" #590 kg, but not actually cetaceans, just really large sea dwelling mammals
+        34: "Guppy %login (D)" # A generic small fish
+        35: "Krill %login (E)" #The thing Whales eat
         # Inactive students have this title (people with 0 points, or that have the lowest rank)
-        36: "Beached Whale %login (F)"
+        36: "Beached Whale %login (F)" #An 'inactive' whale, shall we say
