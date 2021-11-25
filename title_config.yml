@@ -6,7 +6,7 @@
         3: 426
         4: 427
         5: 428
-        6: 429
+        6: 429 # "Master %login (6th)" -> "Sailing Master %login (6th)"
         7: 430
         8: 431
         9: 432
@@ -25,7 +25,7 @@
         22: 445
         23: 446
         24: 447
-        25: 448
+        25: 448 # "Master's Mate %login (25th)" -> "Sailing Master's Mate %login (25th)"
         26: 449
         27: 450
         28: 451
@@ -33,8 +33,8 @@
         30: 453
         # Tiered Ranks (multiple people have the same title, ~20% of active coalition members)
         31: 454
-        32: 455
-        33: 456
+        32: 455 # "Able Seaman %login (B)" -> "Able Sailor %login (B)"
+        33: 456 # "Ordinary Seaman %login (C)" -> # "Ordinary Sailor %login (C)"
         34: 457
         35: 458
         # Inactive students have this title (people with 0 points, or that have the lowest rank)
