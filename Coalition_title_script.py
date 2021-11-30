@@ -6,8 +6,8 @@ from Helsinki_42API_interface import ic
 
 # Specify Codam as campus_id
 campus_id = 14
-staff_privileges = 1
-print_summary = 0
+staff_privileges = 0
+print_summary = 1
 vela_coalition_id = 60
 # Vela title IDs = 424-459
 cetus_coalition_id = 59
@@ -17,8 +17,8 @@ pyxis_coalition_id = 58
 def main():
     print("Script started")
     give_coalition_titles(vela_coalition_id)
-    give_coalition_titles(pyxis_coalition_id)
-    give_coalition_titles(cetus_coalition_id)
+    # give_coalition_titles(pyxis_coalition_id)
+    # give_coalition_titles(cetus_coalition_id)
 
 
 def give_coalition_titles(coalition_id):
